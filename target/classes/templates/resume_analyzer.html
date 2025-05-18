@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume Optimizer Pro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4a6fa5;
+      --secondary: #6b8cae;
+      --accent: #ff7e5f;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+      --light: #ffffff;
+      --light-gray: #f5f7fa;
+      --medium-gray: #e1e5eb;
+      --dark-gray: #6c757d;
+      --text: #333333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--dark-gray);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .upload-container {
+      background: var(--light);
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      text-align: center;
+      border: 2px dashed var(--medium-gray);
+      transition: all 0.3s ease;
+    }
+
+    .upload-container:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .upload-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .upload-text {
+      color: var(--dark-gray);
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .upload-btn:hover {
+      background: #ff6b4d;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 126, 95, 0.3);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-name {
+      margin-top: 1rem;
+      color: var(--primary);
+      font-weight: 500;
+      display: none;
+    }
+
+    /* Results Section */
+    .results-container {
+      display: none;
+      background: var(--light);
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 3rem;
+    }
+
+    .score-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .score-circle {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .score-circle svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .score-circle-bg {
+      fill: none;
+      stroke: var(--medium-gray);
+      stroke-width: 8;
+    }
+
+    .score-circle-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+      transition: stroke-dashoffset 1s ease;
+    }
+
+    .score-value {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .score-label {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+    }
+
+    .score-description {
+      color: var(--dark-gray);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Results Grid */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .result-card {
+      background: var(--light-gray);
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .result-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    .result-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .analysis-list {
+      list-style: none;
+    }
+
+    .analysis-item {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--medium-gray);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .analysis-item:last-child {
+      border-bottom: none;
+    }
+
+    .analysis-icon {
+      font-size: 1.2rem;
+      margin-top: 2px;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .analysis-content {
+      flex: 1;
+    }
+
+    .analysis-title {
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    .analysis-desc {
+      color: var(--dark-gray);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Suggestions */
+    .suggestion-item {
+      background: var(--light-gray);
+      border-radius: 8px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .suggestion-item:hover {
+      background: #eef2f7;
+    }
+
+    .suggestion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+
+    .suggestion-category {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .category-icon {
+      font-size: 1rem;
+    }
+
+    .suggestion-priority {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--danger);
+      color: white;
+    }
+
+    .suggestion-priority.high {
+      background: var(--danger);
+    }
+
+    .suggestion-priority.medium {
+      background: var(--warning);
+      color: var(--text);
+    }
+
+    .suggestion-priority.low {
+      background: var(--success);
+    }
+
+    .suggestion-text {
+      margin-bottom: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .suggestion-details {
+      background: rgba(255,255,255,0.8);
+      border-radius: 6px;
+      padding: 0.8rem;
+      margin-top: 0.8rem;
+      border: 1px solid var(--medium-gray);
+    }
+
+    .detail-title {
+      font-size: 0.85rem;
+      color: var(--dark-gray);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .detail-content {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--medium-gray);
+      margin-left: 0.5rem;
+    }
+
+    .detail-content.before {
+      color: var(--danger);
+      border-left-color: var(--danger);
+      margin-bottom: 0.8rem;
+    }
+
+    .detail-content.after {
+      color: var(--success);
+      border-left-color: var(--success);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+      }
+      
+      .upload-container {
+        padding: 1.5rem;
+      }
+      
+      .results-container {
+        padding: 1.5rem;
+      }
+      
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Resume Optimizer Pro</h1>
+      <p class="subtitle">Get detailed analysis and personalized suggestions to optimize your resume for applicant tracking systems and hiring managers</p>
+    </header>
+
+    <div class="upload-container">
+      <input type="file" id="resumeFile" class="file-input" accept=".pdf,.doc,.docx,.txt" />
+      <div class="upload-icon">
+        <i class="fas fa-file-upload"></i>
+      </div>
+      <h3 class="upload-title">Upload Your Resume</h3>
+      <p class="upload-text">We'll analyze your resume against 50+ ATS criteria used by top companies</p>
+      <button class="upload-btn">Choose File</button>
+      <div class="file-name" id="fileName"></div>
+    </div>
+
+    <div id="results" class="results-container">
+      <div class="score-header">
+        <div class="score-circle">
+          <svg viewBox="0 0 100 100">
+            <circle class="score-circle-bg" cx="50" cy="50" r="40"></circle>
+            <circle class="score-circle-progress" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="100.5"></circle>
+          </svg>
+          <div class="score-value">72</div>
+        </div>
+        <h2 class="score-label">Good Resume Strength</h2>
+        <p class="score-description">Your resume scores well but could be improved in several key areas to better pass ATS screening.</p>
+      </div>
+
+      <div class="results-grid">
+        <div class="result-card">
+          <h3><i class="fas fa-check-circle" style="color: var(--success)"></i> Strengths</h3>
+          <ul class="analysis-list">
+            <li class="analysis-item">
+              <i class="fas fa-user-check analysis-icon" style="color: var(--success)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Clear Contact Information</div>
+                <div class="analysis-desc">Your name, email, and phone number are properly formatted and easy to find.</div>
+              </div>
+            </li>
+            <li class="analysis-item">
+              <i class="fas fa-key analysis-icon" style="color: var(--success)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Relevant Keywords</div>
+                <div class="analysis-desc">Good use of industry-specific keywords throughout your resume.</div>
+              </div>
+            </li>
+            <li class="analysis-item">
+              <i class="fas fa-file-alt analysis-icon" style="color: var(--success)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Proper Length</div>
+                <div class="analysis-desc">Your resume maintains an appropriate 1-2 page length for your experience level.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="result-card">
+          <h3><i class="fas fa-exclamation-triangle" style="color: var(--warning)"></i> Improvements</h3>
+          <ul class="analysis-list">
+            <li class="analysis-item">
+              <i class="fas fa-bullseye analysis-icon" style="color: var(--warning)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Quantifiable Results</div>
+                <div class="analysis-desc">Add more metrics to demonstrate your impact in previous roles.</div>
+              </div>
+            </li>
+            <li class="analysis-item">
+              <i class="fas fa-list-ul analysis-icon" style="color: var(--warning)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Bullet Point Consistency</div>
+                <div class="analysis-desc">Some bullet points are fragments while others are complete sentences.</div>
+              </div>
+            </li>
+            <li class="analysis-item">
+              <i class="fas fa-graduation-cap analysis-icon" style="color: var(--warning)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Education Details</div>
+                <div class="analysis-desc">Include relevant coursework or honors if you're early in your career.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+        <div class="result-card">
+          <h3><i class="fas fa-times-circle" style="color: var(--danger)"></i> Critical Issues</h3>
+          <ul class="analysis-list">
+            <li class="analysis-item">
+              <i class="fas fa-paragraph analysis-icon" style="color: var(--danger)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Missing Summary</div>
+                <div class="analysis-desc">ATS systems look for a professional summary at the top of your resume.</div>
+              </div>
+            </li>
+            <li class="analysis-item">
+              <i class="fas fa-calendar-alt analysis-icon" style="color: var(--danger)"></i>
+              <div class="analysis-content">
+                <div class="analysis-title">Date Formatting</div>
+                <div class="analysis-desc">Inconsistent date formats can confuse ATS parsers.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="result-card" style="margin-top: 2rem; grid-column: 1 / -1;">
+        <h3><i class="fas fa-lightbulb" style="color: var(--accent)"></i> Detailed Suggestions</h3>
+        <div class="suggestion-item">
+          <div class="suggestion-header">
+            <span class="suggestion-category">
+              <i class="fas fa-file-alt category-icon"></i>
+              CONTENT
+            </span>
+            <span class="suggestion-priority high">HIGH PRIORITY</span>
+          </div>
+          <div class="suggestion-text">
+            Add a professional summary section at the top of your resume (3-4 lines) highlighting your key qualifications, years of experience, and career focus.
+          </div>
+          <div class="suggestion-details">
+            <div class="detail-title">
+              <i class="fas fa-magic"></i> Example Summary
+            </div>
+            <div class="detail-content after">
+              "Results-driven Marketing Professional with 5+ years of experience in digital campaign management and team leadership. Proven track record of increasing engagement metrics by 30-50% across multiple platforms. Certified in Google Analytics and AdWords with expertise in SEO, PPC, and social media marketing. Passionate about data-driven strategies that deliver measurable business results."
+            </div>
+          </div>
+        </div>
+        
+        <div class="suggestion-item">
+          <div class="suggestion-header">
+            <span class="suggestion-category">
+              <i class="fas fa-chart-bar category-icon"></i>
+              ACHIEVEMENTS
+            </span>
+            <span class="suggestion-priority high">HIGH PRIORITY</span>
+          </div>
+          <div class="suggestion-text">
+            Rewrite your bullet points using the CAR (Challenge-Action-Result) method to highlight quantifiable achievements.
+          </div>
+          <div class="suggestion-details">
+            <div class="detail-title">
+              <i class="fas fa-times"></i> Current Bullet
+            </div>
+            <div class="detail-content before">
+              "Managed social media accounts and increased engagement"
+            </div>
+            <div class="detail-title">
+              <i class="fas fa-check"></i> Improved Version
+            </div>
+            <div class="detail-content after">
+              "Increased social media engagement by 42% over 6 months (Challenge) by implementing a content calendar and analytics-driven posting strategy (Action), resulting in 15% more qualified leads for the sales team (Result)"
+            </div>
+          </div>
+        </div>
+        
+        <div class="suggestion-item">
+          <div class="suggestion-header">
+            <span class="suggestion-category">
+              <i class="fas fa-key category-icon"></i>
+              KEYWORDS
+            </span>
+            <span class="suggestion-priority medium">MEDIUM PRIORITY</span>
+          </div>
+          <div class="suggestion-text">
+            Incorporate more keywords from your target job descriptions naturally throughout your resume.
+          </div>
+          <div class="suggestion-details">
+            <div class="detail-title">
+              <i class="fas fa-search"></i> Missing Keywords
+            </div>
+            <div class="detail-content">
+              "CRM platforms, KPI reporting, conversion optimization, A/B testing, marketing automation, ROI analysis"
+            </div>
+          </div>
+        </div>
+        
+        <div class="suggestion-item">
+          <div class="suggestion-header">
+            <span class="suggestion-category">
+              <i class="fas fa-edit category-icon"></i>
+              FORMATTING
+            </span>
+            <span class="suggestion-priority medium">MEDIUM PRIORITY</span>
+          </div>
+          <div class="suggestion-text">
+            Standardize all dates to use the same format (Month Year - Month Year) throughout your resume.
+          </div>
+          <div class="suggestion-details">
+            <div class="detail-title">
+              <i class="fas fa-times"></i> Inconsistent
+            </div>
+            <div class="detail-content before">
+              "June 2020 - Present | 2018-2019 | Jan. 2017 - May 2018"
+            </div>
+            <div class="detail-title">
+              <i class="fas fa-check"></i> Standardized
+            </div>
+            <div class="detail-content after">
+              "June 2020 - Present | September 2018 - December 2019 | January 2017 - May 2018"
+            </div>
+          </div>
+        </div>
+        
+        <div class="suggestion-item">
+          <div class="suggestion-header">
+            <span class="suggestion-category">
+              <i class="fas fa-code category-icon"></i>
+              SKILLS
+            </span>
+            <span class="suggestion-priority low">LOW PRIORITY</span>
+          </div>
+          <div class="suggestion-text">
+            Reorganize your skills section into logical categories rather than a single list for better readability.
+          </div>
+          <div class="suggestion-details">
+            <div class="detail-title">
+              <i class="fas fa-times"></i> Current Format
+            </div>
+            <div class="detail-content before">
+              "Photoshop, HTML, CSS, JavaScript, Google Analytics, Facebook Ads, SEO, WordPress, Email Marketing, PowerPoint"
+            </div>
+            <div class="detail-title">
+              <i class="fas fa-check"></i> Improved Format
+            </div>
+            <div class="detail-content after">
+              <strong>Technical Skills:</strong> HTML, CSS, JavaScript, WordPress<br>
+              <strong>Digital Marketing:</strong> SEO, Google Analytics, Facebook Ads, Email Marketing<br>
+              <strong>Design Tools:</strong> Photoshop, PowerPoint
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('resumeFile');
+    const fileName = document.getElementById('fileName');
+    const resultsEl = document.getElementById('results');
+    const uploadIcon = document.querySelector('.upload-icon i');
+    const uploadTitle = document.querySelector('.upload-title');
+    const uploadBtn = document.querySelector('.upload-btn');
+
+    fileInput.addEventListener('change', function() {
+      if (this.files.length > 0) {
+        fileName.textContent = this.files[0].name;
+        fileName.style.display = 'block';
+        analyzeResume();
+      }
+    });
+
+    function analyzeResume() {
+      if (!fileInput.files[0]) return;
+      
+      // Show loading state
+      uploadIcon.className = 'fas fa-spinner fa-spin';
+      uploadTitle.textContent = 'Analyzing Resume...';
+      uploadBtn.style.display = 'none';
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        // Show results
+        resultsEl.style.display = 'block';
+        resultsEl.scrollIntoView({ behavior: 'smooth' });
+        
+        // Reset upload box
+        uploadIcon.className = 'fas fa-check-circle';
+        uploadTitle.textContent = 'Analysis Complete!';
+        uploadBtn.style.display = 'inline-block';
+      }, 2000);
+    }
+
+    // Allow clicking anywhere in upload box to trigger file input
+    document.querySelector('.upload-container').addEventListener('click', function(e) {
+      if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'BUTTON') {
+        fileInput.click();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">CareerCraft AI</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #1b5e20;
+            --accent-color: #4caf50;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --gradient: linear-gradient(135deg, #2e7d32, #1b5e20);
+            --gray-gradient: linear-gradient(135deg, #4a5568, #1a202c);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: var(--dark-color);
+        }
+        
+        /* Glassmorphism effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+        }
+        
+        /* Hero Section with Gray Gradient */
+        .hero-section {
+            background: var(--gray-gradient);
+            color: white;
+            padding: 8rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1521791055366-0d553872125f?q=80&w=2069&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            opacity: 0.15;
+            mix-blend-mode: overlay;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Gray theme buttons */
+        .bg-gray-600 {
+            background-color: #4b5563;
+            transition: all 0.3s ease;
+        }
+        
+        .bg-gray-600:hover {
+            background-color: #374151;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Outlined button styling */
+        .border-2.border-white.text-white {
+            transition: all 0.3s ease;
+        }
+        
+        .border-2.border-white.text-white:hover {
+            background-color: white;
+            color: #4b5563;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Text highlight effect */
+        .text-yellow-300 {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .text-yellow-300::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background-color: rgba(252, 211, 77, 0.2);
+            z-index: -1;
+            transform: skew(-5deg);
+        }
+        
+        /* Animated gradient border */
+        .gradient-border {
+            position: relative;
+            border-radius: 12px;
+        }
+        
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--gradient);
+            z-index: -1;
+            border-radius: 12px;
+            animation: rotate 3s linear infinite;
+            background-size: 400% 400%;
+        }
+        
+        @keyframes rotate {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            z-index: 1000;
+        }
+        
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            font-weight: 600;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        
+        .navbar.scrolled {
+            background-color: rgba(26, 26, 46, 0.95) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+            margin: 0 0.5rem;
+            font-weight: 500;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn-outline-light {
+            border: 2px solid white;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Feature Cards */
+        .feature-card {
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(46, 125, 50, 0.15);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(46, 125, 50, 0.1);
+            margin: 0 auto 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            background: var(--gradient);
+            color: white;
+            transform: rotate(10deg) scale(1.1);
+        }
+        
+        /* Testimonials */
+        .testimonial-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 5rem;
+            color: rgba(46, 125, 50, 0.1);
+            font-family: serif;
+            line-height: 1;
+            z-index: 0;
+        }
+        
+        .testimonial-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+        
+        /* Floating animation */
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating-element {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        /* Text animations */
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .animate-delay-1 {
+            animation-delay: 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2072&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .footer-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 8rem 0 4rem;
+            }
+            
+            .display-4 {
+                font-size: 2.5rem;
+            }
+            
+            .floating-element {
+                transform: scale(0.9);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: rgba(26, 26, 46, 0.8);">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-rocket me-2" viewBox="0 0 16 16">
+                    <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    <path d="M11.46 7.85A3.81 3.81 0 0 0 9.89 3.62a.5.5 0 0 1 .146-.354l2.91-2.91a.5.5 0 0 1 .708 0l.646.647a.5.5 0 0 1 0 .707l-2.91 2.91a.5.5 0 0 1-.353.146H9.88c-.641 0-1.26.16-1.81.46l-3.3 1.73a6.6 6.6 0 0 0-1.69 1.27l-1.27 1.68S1 11 2 11h.5a.5.5 0 0 1 .5.5v.32a.5.5 0 0 1-.22.42l-1.13.75a.5.5 0 0 0 0 .84l.5.32a.5.5 0 0 1 .22.42v.12a.5.5 0 0 1-.22.42l-1.13.75a.5.5 0 0 0 0 .84l.5.32a.5.5 0 0 1 .22.42v.32a.5.5 0 0 1-.5.5H2c0 1 1 1 1 1l1.68-1.68a6.6 6.6 0 0 0 1.27-1.69l1.73-3.3c.3-.55.46-1.17.46-1.81v-.38a.5.5 0 0 1 .146-.354l2.91-2.91a.5.5 0 0 1 .708 0l.647.646a.5.5 0 0 1 0 .708l-2.91 2.91a.5.5 0 0 1-.354.146h-.938a3.8 3.8 0 0 0-4.23 1.54l-.5.8a.5.5 0 1 1-.848-.53l.5-.8a4.8 4.8 0 0 1 5.34-1.94l1.61.81a.5.5 0 0 1 .23.23l.81 1.61a4.8 4.8 0 0 1-1.94 5.34l-.8.5a.5.5 0 0 1-.53-.848l.8-.5a3.8 3.8 0 0 0 1.54-4.23l.81-1.61a.5.5 0 0 1 .23-.23l1.61-.81a4.8 4.8 0 0 1 5.34 1.94l.5.8a.5.5 0 1 1-.848.53l-.5-.8a3.8 3.8 0 0 0-4.23-1.54l-1.61.81a.5.5 0 0 1-.23.23l-.81 1.61a3.8 3.8 0 0 0 1.54 4.23l.8.5a.5.5 0 1 1-.53.848l-.8-.5a4.8 4.8 0 0 1-1.94-5.34l.81-1.61a.5.5 0 0 1 .23-.23l1.61-.81z"/>
+                </svg>
+                CareerCraft AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resume-builder">Resume Builder</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/resume-analyzer">Resume Analyzer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/career-test">Career Assistance Test</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/career-advice">Career Roadmap</a>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content animate__animated animate__fadeIn">
+                    <h1 class="display-4 fw-bold mb-4">Your AI-Powered <span class="text-warning">Career Co-Pilot</span></h1>
+                    <p class="lead mb-5">Navigate your career path with confidence using our intelligent tools for resume building, career assessment, and personalized recommendations.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="/resume-builder" class="btn btn-primary btn-lg px-4 gradient-border">
+                            <span class="d-inline-block">Build Your Resume</span>
+                        </a>
+                        <a href="/career-test" class="btn btn-outline-light btn-lg px-4">Take Career Test</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block animate__animated animate__fadeIn animate__delay-1s">
+                    <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?q=80&w=2070&auto=format&fit=crop" alt="Career growth" class="img-fluid rounded-4 floating-element" style="max-height: 500px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container my-5 py-5">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-3">How CareerCraft AI Helps You</h2>
+                <p class="lead text-muted">Our powerful features are designed to give you an edge in your career journey</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
+                            <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                            <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-center mb-3">ATS-Optimized Resume Builder</h4>
+                    <p class="text-muted text-center">Create professional resumes that pass through Applicant Tracking Systems with ease.</p>
+                    <div class="text-center mt-4">
+                        <a href="/resume-builder" class="btn btn-sm btn-outline-primary">Try Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-center mb-3">Resume Analyzer</h4>
+                    <p class="text-muted text-center">Get instant feedback on your existing resume with actionable improvement suggestions.</p>
+                    <div class="text-center mt-4">
+                        <a href="/resume-analyzer" class="btn btn-sm btn-outline-primary">Analyze Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-graph-up" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M0 0h1v15h15v1H0V0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-center mb-3">Career Assistance Test</h4>
+                    <p class="text-muted text-center">Discover your ideal career path based on your skills, interests, and personality.</p>
+                    <div class="text-center mt-4">
+                        <a href="/career-test" class="btn btn-sm btn-outline-primary">Take Test</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-compass" viewBox="0 0 16 16">
+                            <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016zm6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                            <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z"/>
+                        </svg>
+                    </div>
+                    <h4 class="text-center mb-3">Career Advice</h4>
+                    <p class="text-muted text-center">Get instant roadmap for your career with personalized guidance.</p>
+                    <div class="text-center mt-4">
+                        <a href="/career-advice" class="btn btn-sm btn-outline-primary">Check Roadmap</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-md-3">
+                    <div class="glass-card p-4">
+                        <h2 class="display-4 fw-bold text-primary">10K+</h2>
+                        <p class="mb-0">Resumes Built</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-4">
+                        <h2 class="display-4 fw-bold text-primary">95%</h2>
+                        <p class="mb-0">ATS Success Rate</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-4">
+                        <h2 class="display-4 fw-bold text-primary">8K+</h2>
+                        <p class="mb-0">Career Tests Taken</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-4">
+                        <h2 class="display-4 fw-bold text-primary">4.9★</h2>
+                        <p class="mb-0">User Rating</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 my-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-3">What Our Users Say</h2>
+                    <p class="lead text-muted">Success stories from professionals who transformed their careers</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="testimonial-card p-4 h-100 bg-white">
+                        <div class="testimonial-content">
+                            <p class="mb-4">"CareerCraft AI helped me create a resume that got me interviews at 3 top tech companies within two weeks!"</p>
+                            <div class="d-flex align-items-center">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="user-avatar me-3" alt="Rahul Sharma">
+                                <div>
+                                    <h6 class="mb-0">Rahul Sharma</h6>
+                                    <small class="text-muted">Software Engineer at Google</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card p-4 h-100 bg-white">
+                        <div class="testimonial-content">
+                            <p class="mb-4">"The career test opened my eyes to data science opportunities I never considered before. I'm now working my dream job!"</p>
+                            <div class="d-flex align-items-center">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="user-avatar me-3" alt="Priya Patel">
+                                <div>
+                                    <h6 class="mb-0">Priya Patel</h6>
+                                    <small class="text-muted">Data Scientist at Amazon</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card p-4 h-100 bg-white">
+                        <div class="testimonial-content">
+                            <p class="mb-4">"As a career changer, I was lost in the job market. CareerCraft AI gave me direction, confidence, and the tools to succeed."</p>
+                            <div class="d-flex align-items-center">
+                                <img src="https://randomuser.me/api/portraits/men/75.jpg" class="user-avatar me-3" alt="Amit Singh">
+                                <div>
+                                    <h6 class="mb-0">Amit Singh</h6>
+                                    <small class="text-muted">Product Manager at Microsoft</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h2 class="fw-bold mb-4">How It Works</h2>
+                    <div class="d-flex mb-4">
+                        <div class="me-4">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <span class="fw-bold">1</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>Create Your Profile</h5>
+                            <p class="text-muted">Tell us about your skills, experience, and career aspirations.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-4">
+                        <div class="me-4">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <span class="fw-bold">2</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>Use Our AI Tools</h5>
+                            <p class="text-muted">Build or analyze your resume, take career tests, get personalized advice.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="me-4">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <span class="fw-bold">3</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h5>Land Your Dream Job</h5>
+                            <p class="text-muted">Implement our recommendations and watch your career take off.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop" alt="Team working" class="img-fluid rounded-4 shadow">
+                        <div class="position-absolute bottom-0 start-0 translate-middle bg-white p-3 rounded-3 shadow-sm d-none d-lg-block" style="width: 200px;">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 p-2 rounded me-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="var(--primary-color)" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                        <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">Resume Analyzed</h6>
+                                    <small class="text-muted">Score: 92/100</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-5 my-5 position-relative overflow-hidden">
+        <div class="container position-relative z-index-1">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="glass-card p-5">
+                        <h2 class="fw-bold mb-4">Ready to Transform Your Career?</h2>
+                        <p class="lead mb-4">Join thousands of students and professionals who have accelerated their careers with CareerCraft AI</p>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: var(--gradient); opacity: 0.05; z-index: 0;"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5">
+        <div class="footer-content container">
+            <div class="row g-4">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-white mb-4 d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-rocket me-2" viewBox="0 0 16 16">
+                            <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                            <path d="M11.46 7.85A3.81 3.81 0 0 0 9.89 3.62a.5.5 0 0 1 .146-.354l2.91-2.91a.5.5 0 0 1 .708 0l.646.647a.5.5 0 0 1 0 .707l-2.91 2.91a.5.5 0 0 1-.353.146H9.88c-.641 0-1.26.16-1.81.46l-3.3 1.73a6.6 6.6 0 0 0-1.69 1.27l-1.27 1.68S1 11 2 11h.5a.5.5 0 0 1 .5.5v.32a.5.5 0 0 1-.22.42l-1.13.75a.5.5 0 0 0 0 .84l.5.32a.5.5 0 0 1 .22.42v.12a.5.5 0 0 1-.22.42l-1.13.75a.5.5 0 0 0 0 .84l.5.32a.5.5 0 0 1 .22.42v.32a.5.5 0 0 1-.5.5H2c0 1 1 1 1 1l1.68-1.68a6.6 6.6 0 0 0 1.27-1.69l1.73-3.3c.3-.55.46-1.17.46-1.81v-.38a.5.5 0 0 1 .146-.354l2.91-2.91a.5.5 0 0 1 .708 0l.647.646a.5.5 0 0 1 0 .708l-2.91 2.91a.5.5 0 0 1-.354.146h-.938a3.8 3.8 0 0 0-4.23 1.54l-.5.8a.5.5 0 1 1-.848-.53l.5-.8a4.8 4.8 0 0 1 5.34-1.94l1.61.81a.5.5 0 0 1 .23.23l.81 1.61a4.8 4.8 0 0 1-1.94 5.34l-.8.5a.5.5 0 0 1-.53-.848l.8-.5a3.8 3.8 0 0 0 1.54-4.23l.81-1.61a.5.5 0 0 1 .23-.23l1.61-.81a4.8 4.8 0 0 1 5.34 1.94l.5.8a.5.5 0 1 1-.848.53l-.5-.8a3.8 3.8 0 0 0-4.23-1.54l-1.61.81a.5.5 0 0 1-.23.23l-.81 1.61a3.8 3.8 0 0 0 1.54 4.23l.8.5a.5.5 0 1 1-.53.848l-.8-.5a4.8 4.8 0 0 1-1.94-5.34l.81-1.61a.5.5 0 0 1 .23-.23l1.61-.81z"/>
+                        </svg>
+                        CareerCraft AI
+                    </h5>
+                    <p class="text-white-50">Your intelligent career co-pilot helping you navigate the complex job market with AI-powered tools.</p>
+                    <div class="d-flex mt-4">
+                        <a href="#" class="social-icon me-2"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon me-2"><i class="bi bi-twitter"></i></a>
+                        <a href="https://www.linkedin.com/in/feroz-ali-5b12b632b/" class="social-icon me-2"><i class="bi bi-linkedin"></i></a>
+                        <a href="https://www.instagram.com/its_me_feroz_ali/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-2 mb-4">
+                    <h5 class="text-white mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/home" class="text-white-50">Home</a></li>
+                        <li class="mb-2"><a href="/about" class="text-white-50">About Us</a></li>
+                        <li class="mb-2"><a href="/contact" class="text-white-50">Contact</a></li>
+                        <li class="mb-2"><a href="/privacy" class="text-white-50">Privacy Policy</a></li>
+                        <li><a href="/terms" class="text-white-50">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <h5 class="text-white mb-4">Features</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/resume-builder" class="text-white-50">Resume Builder</a></li>
+                        <li class="mb-2"><a href="/resume-analyzer" class="text-white-50">Resume Analyzer</a></li>
+                        <li class="mb-2"><a href="/career-test" class="text-white-50">Career Test</a></li>
+                        <li class="mb-2"><a href="/career-advice" class="text-white-50">Career Advice</a></li>
+                        <li><a href="/roadmap" class="text-white-50">Career Roadmap</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <h5 class="text-white mb-4">Contact Us</h5>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-envelope me-2"></i>
+                            support@careercraftai.com
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-telephone me-2"></i>
+                            +91 8088623193
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="bi bi-geo-alt me-2 mt-1"></i>
+                            <span>123 Career Street, Tech City, IN 560001</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-white-10">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-white-50">&copy; 2025 CareerCraft AI. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 text-white-50">Designed with <i class="bi bi-heart-fill text-danger"></i> in India</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="btn btn-primary btn-lg rounded-circle position-fixed bottom-0 end-0 m-4 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; z-index: 99;">
+        <i class="bi bi-arrow-up"></i>
+    </a>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Animate elements when they come into view
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.feature-card, .testimonial-card');
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (elementPosition < windowHeight - 100) {
+                    element.classList.add('animate__animated', 'animate__fadeInUp');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+</body>
+</html>
