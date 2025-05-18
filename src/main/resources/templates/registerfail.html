@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Registration Error</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #fff5f5 0%, #ffecec 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .error-container {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        max-width: 450px;
+        width: 90%;
+        border-top: 4px solid #ff5252;
+    }
+
+    h2 {
+        color: #ff5252;
+        font-size: 1.8em;
+        margin-bottom: 25px;
+    }
+
+    .error-icon {
+        font-size: 60px;
+        color: #ff5252;
+        margin-bottom: 20px;
+    }
+
+    .register-link {
+        display: inline-block;
+        background-color: #ff5252;
+        color: white;
+        text-decoration: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-size: 1em;
+        font-weight: 500;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(255, 82, 82, 0.2);
+    }
+
+    .register-link:hover {
+        background-color: #e74c4c;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(255, 82, 82, 0.3);
+    }
+
+    .register-link:active {
+        transform: translateY(0);
+    }
+
+    .message {
+        color: #555;
+        font-size: 1.1em;
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+
+    .login-suggestion {
+        margin-top: 20px;
+        color: #666;
+        font-size: 0.9em;
+    }
+
+    .login-suggestion a {
+        color: #ff5252;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .login-suggestion a:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+<div class="error-container">
+    <div class="error-icon">✕</div>
+    <h2>Email ID Already Exists!</h2>
+    <p class="message">The email address you entered is already registered with us. Please use a different email or try logging in.</p>
+    <a href="/map-register" class="register-link">Click here to register</a>
+    <p class="login-suggestion">Already have an account? <a href="/map-login">Login here</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CareerCraft | Login & Signup</title>
+  
+  <style>/* Base */
+body, html {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.app {
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background-color: #0a0a0a;
+  font-size: 1.1rem;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+/* Button Base Styles */
+button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  height: 48px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 1.1rem;
+  font-family: inherit;
+  transition: box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+button .spark__container {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+button .spark {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #d946ef, #3b82f6, #0ea5e9, #a21caf);
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: 0.7;
+  animation: spark-move 1.2s infinite linear;
+}
+
+@keyframes spark-move {
+  0% { transform: scale(1) translateY(0); opacity: 0.7; }
+  50% { transform: scale(1.2) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 0.7; }
+}
+
+button .backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(252, 252, 252, 0.06);
+  border-radius: 12px;
+  z-index: 0;
+  transition: background 0.2s;
+}
+
+button .text {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding-left: 18px;
+}
+
+button:hover .backdrop {
+  background: linear-gradient(90deg, #d946ef 0%, #3b82f6 100%);
+}
+
+button:hover .text {
+  color: #000;
+}
+
+.nav-links button,
+.buttons button {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  height: 48px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-family: inherit;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 80px 80px;
+  flex-wrap: wrap;
+  background-color: #000;
+}
+
+.hero-left {
+  flex: 1;
+  min-width: 320px;
+  padding-right: 40px;
+}
+
+.hero-left h1 {
+  font-size: 4rem;
+  line-height: 1.3;
+  margin-bottom: 30px;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #d946ef, #3b86fb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 20px;
+}
+
+/* Lottie */
+.hero-right {
+  flex: 1;
+  min-width: 320px;
+  display: flex;
+  justify-content: center;
+}
+
+.lottie-animation {
+  width: 100%;
+  max-width: 700px;
+  height: 450px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #111;
+  font-size: 1rem;
+  margin-top: 80px;
+}
+
+/* Login/Signup Section */
+.hidden {
+  display: none !important;
+}
+
+.auth-section {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: #0b0b0f;
+  min-height: 100vh;
+  padding: 60px 20px;
+}
+
+.auth-section.show {
+  display: flex;
+}
+
+.container {
+  background: #1c1c24;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(160, 32, 240, 0.5);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
+}
+
+form {
+  background: #0f0f14;
+  display: flex;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+input {
+  background: #191927;
+  border: none;
+  padding: 12px;
+  margin: 8px 0;
+  width: 100%;
+  border-radius: 8px;
+  color: #fff;
+}
+
+button[type="submit"], form button {
+  margin-top: 16px;
+  border: none;
+  padding: 12px 40px;
+  background: linear-gradient(to right, #d946ef, #3b82f6);
+  color: #fff;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(to right, #a855f7, #2563eb);
+}
+
+p {
+  margin-top: 16px;
+  color: #bbb;
+}
+
+a {
+  color: #a855f7;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
+}
+
+.sign-in-container {
+  left: 0;
+  width: 50%;
+  z-index: 2;
+}
+
+.sign-up-container {
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
+}
+
+.container.right-panel-active .sign-in-container {
+  transform: translateX(100%);
+}
+
+.container.right-panel-active .sign-up-container {
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+}
+
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
+}
+
+.container.right-panel-active .overlay-container {
+  transform: translateX(-100%);
+}
+
+.overlay {
+  background: linear-gradient(to right, #8b5cf6, #d946ef);
+  color: white;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.container.right-panel-active .overlay {
+  transform: translateX(50%);
+}
+
+.overlay-panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 40px;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  transition: transform 0.6s ease-in-out;
+}
+
+.overlay-left {
+  transform: translateX(-20%);
+}
+
+.container.right-panel-active .overlay-left {
+  transform: translateX(0);
+}
+
+.overlay-right {
+  right: 0;
+  transform: translateX(0);
+}
+
+.container.right-panel-active .overlay-right {
+  transform: translateX(20%);
+}
+.auth-section {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: #0b0b0f;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+.auth-section.show {
+  display: flex;
+}
+
+.container {
+  background: #1c1c24;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(160, 32, 240, 0.5);
+  position: relative;
+  overflow: hidden;
+  width: 768px;
+  max-width: 100%;
+  min-height: 480px;
+  z-index: 1000;
+}
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #191927;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 1px solid #333;
+  font-size: 0.9rem;
+}
+
+.social-btn:hover {
+  background-color: #2a2a3a;
+  transform: translateY(-2px);
+}
+
+.social-btn img {
+  height: 20px;
+  width: 20px;
+}
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.social-btn img {
+  height: 25px;
+  width: 28px;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.social-btn img:hover {
+  transform: scale(1.1);
+}</style>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">CareerCraft</div>
+    <div class="nav-links">
+      <button id="show-login">
+        <span class="spark__container"><span class="spark"></span></span>
+        <span class="backdrop"></span>
+        <span class="text" >Login</span>
+      </button>
+      <button id="show-signup">
+        <span class="spark__container"><span class="spark"></span></span>
+        <span class="backdrop"></span>
+         <span class="text" >Sign</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <h1>
+        Build Smarter Careers with <br />
+        <span class="gradient-text">CareerCraft AI</span>
+      </h1>
+      
+    </div>
+    <div class="hero-right">
+      <div class="lottie-animation" id="lottie"></div>
+    </div>
+  </section>
+
+  <!-- Login/Signup Modal Section -->
+  <section class="auth-section hidden" id="auth-section">
+    <div class="container" id="auth-container">
+      <!-- Sign Up Form -->
+      <div class="form-container sign-up-container">
+        <form action="/register" method="post">
+          <h1>Sign Up</h1>
+          <input type="text" placeholder="username" name="username" />
+          <input type="email" placeholder="Email"  name="email"/>
+          <input type="password" placeholder="Password"  name="password"/>
+          <button type="submit" onclick="showSignupAlert()">Sign Up</button>
+          <div class="social-login">
+            <div class="social-btn"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google" /></div>
+            <div class="social-btn"><img src="https://img.icons8.com/color/48/microsoft.png" alt="Microsoft" /></div>
+            <div class="social-btn"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn" /></div>
+          </div>
+          <p>Already have an account? <a href="#" id="back-to-login">Login</a></p>
+        </form>
+      </div>
+
+      <!-- Login Form -->
+      <div class="form-container sign-in-container">
+        <form action="/login" method="post">
+          <h1>Login</h1>
+          <input type="email" placeholder="Email"  name="email"/>
+          <input type="password" placeholder="Password" name="password"/>
+          <button type="submit">Login</button>
+          <div class="social-login">
+            <div class="social-btn"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google" /></div>
+            <div class="social-btn"><img src="https://img.icons8.com/color/48/microsoft.png" alt="Microsoft" /></div>
+            <div class="social-btn"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn" /></div>
+          </div>
+          <p>Don’t have an account? <a href="#" id="back-to-signup">Sign Up</a></p>
+        </form>
+      </div>
+
+      <!-- Overlay -->
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>Welcome!</h1>
+            <pre>Sign up  to Shape a 
+            Smarter Career Path</pre>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>Welcome Back!</h1>
+            <p>Log in to Craft the Career You Deserve</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <script >// Lottie animation
+  
+  function showSignupAlert() {
+      alert("Thank you for signing up! We'll send you a confirmation email shortly.");
+  }
+  
+  lottie.loadAnimation({
+	  container: document.getElementById('lottie'),
+	  renderer: 'svg',
+	  loop: true,
+	  autoplay: true,
+	  path: '/ai-future.json'
+	});
+
+	// Auth section toggling
+	const container = document.getElementById('auth-container');
+	const authSection = document.getElementById('auth-section');
+	const hero = document.getElementById('hero');
+
+	document.getElementById('show-login').addEventListener('click', () => {
+	  authSection.classList.remove('hidden');
+	  authSection.classList.add('show');
+	  hero.classList.add('hidden');
+	  container.classList.remove('right-panel-active');
+	});
+
+	document.getElementById('show-signup').addEventListener('click', () => {
+	  authSection.classList.remove('hidden');
+	  authSection.classList.add('show');
+	  hero.classList.add('hidden');
+	  container.classList.add('right-panel-active');
+	});
+
+	document.getElementById('back-to-login').addEventListener('click', (e) => {
+	  e.preventDefault();
+	  container.classList.remove('right-panel-active');
+	});
+
+	document.getElementById('back-to-signup').addEventListener('click', (e) => {
+	  e.preventDefault();
+	  container.classList.add('right-panel-active');
+	});</script>
+</body>
+</html>
+

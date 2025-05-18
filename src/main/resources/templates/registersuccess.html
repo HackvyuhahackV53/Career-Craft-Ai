@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Registration Successful</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .success-container {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    h1 {
+        color: #4CAF50;
+        font-size: 2.2em;
+        margin-bottom: 20px;
+    }
+
+    .success-icon {
+        font-size: 80px;
+        color: #4CAF50;
+        margin-bottom: 20px;
+    }
+
+    .login-link {
+        display: inline-block;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 1.1em;
+        font-weight: bold;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+
+    .login-link:hover {
+        background-color: #45a049;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+    }
+
+    .login-link:active {
+        transform: translateY(0);
+    }
+
+    .welcome-text {
+        color: #555;
+        font-size: 1.1em;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+</style>
+</head>
+<body>
+<div class="success-container">
+    <div class="success-icon">✓</div>
+    <h1>You have registered successfully!</h1>
+    <p class="welcome-text">Welcome to our community! You're now ready to access all our features.</p>
+    <a href="/map-login" class="login-link">Click here to Login</a>
+</div>
+</body>
+</html>

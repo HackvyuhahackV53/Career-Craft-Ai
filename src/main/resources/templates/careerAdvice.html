@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Assistance Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .question-card {
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .progress {
+            height: 10px;
+            margin-bottom: 2rem;
+        }
+        .option-btn {
+            text-align: left;
+            margin-bottom: 0.5rem;
+        }
+        .result-card {
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">CareerGuide</a>
+            <span class="navbar-text">Career Assistance Test</span>
+        </div>
+    </nav>
+
+    <!-- Test Container -->
+    <div class="container my-5" id="test-container">
+        <!-- User Info Form -->
+        <div class="card question-card" id="user-info-section">
+            <div class="card-header bg-primary text-white">
+                <h5>Tell Us About Yourself</h5>
+            </div>
+            <div class="card-body">
+                <form id="user-info-form">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="number" class="form-control" id="age" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="education" class="form-label">Highest Education Level</label>
+                        <select class="form-select" id="education" required>
+                            <option value="">Select...</option>
+                            <option value="high_school">High School</option>
+                            <option value="bachelor">Bachelor's Degree</option>
+                            <option value="master">Master's Degree</option>
+                            <option value="phd">PhD</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="startTest()">Start Test</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Questions Section (initially hidden) -->
+        <div id="questions-section" style="display: none;">
+            <div class="d-flex justify-content-between mb-3">
+                <span id="progress-text">Question 1 of 10</span>
+                <div class="w-50">
+                    <div class="progress">
+                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 10%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card question-card">
+                <div class="card-header bg-primary text-white">
+                    <h5 id="question-text">Question text goes here</h5>
+                </div>
+                <div class="card-body" id="options-container">
+                    <!-- Options will be inserted here by JavaScript -->
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-3">
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                <button id="next-btn" class="btn btn-primary">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section (initially hidden) -->
+    <div class="container my-5" id="results-section" style="display: none;">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h3>Your Career Recommendations</h3>
+            </div>
+            <div class="card-body">
+                <div id="career-results">
+                    <!-- Results will be inserted here by JavaScript -->
+                </div>
+                <div class="mt-4">
+                    <h4>Suggested Learning Path</h4>
+                    <div id="learning-path"></div>
+                </div>
+                <div class="mt-4">
+                    <h4>Job Opportunities</h4>
+                    <div id="job-opportunities"></div>
+                </div>
+                <div class="mt-4">
+                    <button class="btn btn-primary" onclick="window.location.href='/'">Back to Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Test questions data
+        const testQuestions = [
+            {
+                id: 1,
+                category: "interests",
+                text: "Which of these activities do you enjoy the most?",
+                options: [
+                    "Solving complex problems",
+                    "Creating art or designing things",
+                    "Helping and working with people",
+                    "Analyzing data and patterns",
+                    "Building or fixing things"
+                ]
+            },
+            {
+                id: 2,
+                category: "strengths",
+                text: "What are you naturally good at?",
+                options: [
+                    "Mathematics and logical thinking",
+                    "Creative thinking and imagination",
+                    "Communication and teamwork",
+                    "Attention to detail",
+                    "Practical hands-on skills"
+                ]
+            },
+            {
+                id: 3,
+                category: "experiences",
+                text: "Which of these have you had the most experience with?",
+                options: [
+                    "Programming or technical projects",
+                    "Artistic or creative projects",
+                    "Team leadership or mentoring",
+                    "Data analysis or research",
+                    "Hands-on technical work"
+                ]
+            },
+            {
+                id: 4,
+                category: "goals",
+                text: "What are your primary career goals?",
+                options: [
+                    "Developing innovative technology",
+                    "Expressing creativity",
+                    "Helping others succeed",
+                    "Solving complex problems",
+                    "Building practical solutions"
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userResponses = {};
+        let userInfo = {};
+
+        function startTest() {
+            // Validate user info
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const age = document.getElementById('age').value.trim();
+            const education = document.getElementById('education').value;
+            
+            if (!name || !email || !age || !education) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Save user info
+            userInfo = {
+                name: name,
+                email: email,
+                age: age,
+                education: education
+            };
+
+            // Hide user info section and show questions
+            document.getElementById('user-info-section').style.display = 'none';
+            document.getElementById('questions-section').style.display = 'block';
+
+            // Load first question
+            loadQuestion(currentQuestion);
+        }
+
+        function loadQuestion(index) {
+            const question = testQuestions[index];
+            document.getElementById('question-text').textContent = question.text;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'form-check';
+                
+                const input = document.createElement('input');
+                input.className = 'form-check-input';
+                input.type = 'radio';
+                input.name = 'question-option';
+                input.id = `option-${i}`;
+                input.value = option;
+                
+                // Check if this option was previously selected
+                if (userResponses[question.id] && userResponses[question.id].response === option) {
+                    input.checked = true;
+                }
+                
+                const label = document.createElement('label');
+                label.className = 'form-check-label';
+                label.htmlFor = `option-${i}`;
+                label.textContent = option;
+                
+                optionDiv.appendChild(input);
+                optionDiv.appendChild(label);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Update progress
+            updateProgress(index);
+        }
+
+        function updateProgress(index) {
+            document.getElementById('progress-text').textContent = 
+                `Question ${index + 1} of ${testQuestions.length}`;
+            document.getElementById('progress-bar').style.width = 
+                `${((index + 1) / testQuestions.length) * 100}%`;
+
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').textContent = 
+                index === testQuestions.length - 1 ? 'Submit' : 'Next';
+        }
+
+        function saveResponse() {
+            const selectedOption = document.querySelector('input[name="question-option"]:checked');
+            if (selectedOption) {
+                const question = testQuestions[currentQuestion];
+                userResponses[question.id] = {
+                    questionId: question.id,
+                    response: selectedOption.value,
+                    category: question.category
+                };
+                return true;
+            }
+            return false;
+        }
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (!saveResponse()) {
+                alert('Please select an option before continuing');
+                return;
+            }
+
+            if (currentQuestion < testQuestions.length - 1) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            } else {
+                submitTest();
+            }
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
+        });
+
+        function submitTest() {
+            // Hide test section and show results
+            document.getElementById('questions-section').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+
+            // Generate results based on responses (client-side only)
+            const results = generateResults();
+            displayResults(results);
+        }
+
+        function generateResults() {
+            // Simple client-side analysis based on responses
+            const scores = {
+                technical: 0,
+                creative: 0,
+                social: 0,
+                analytical: 0,
+                practical: 0
+            };
+
+            // Score responses
+            Object.values(userResponses).forEach(response => {
+                const answer = response.response.toLowerCase();
+                
+                if (answer.includes("problem") || answer.includes("code") || answer.includes("programming")) {
+                    scores.technical += 2;
+                }
+                if (answer.includes("art") || answer.includes("design") || answer.includes("creative")) {
+                    scores.creative += 2;
+                }
+                if (answer.includes("help") || answer.includes("team") || answer.includes("communicat")) {
+                    scores.social += 2;
+                }
+                if (answer.includes("analy") || answer.includes("data") || answer.includes("research")) {
+                    scores.analytical += 2;
+                }
+                if (answer.includes("build") || answer.includes("fix") || answer.includes("practical")) {
+                    scores.practical += 2;
+                }
+            });
+
+            // Determine dominant category
+            const dominantCategory = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+
+            // Generate recommendations based on dominant category
+            return generateRecommendations(dominantCategory, userInfo.education);
+        }
+
+        function generateRecommendations(category, educationLevel) {
+            const recommendations = {
+                careers: [],
+                learningPath: [],
+                jobOpportunities: []
+            };
+
+            switch (category) {
+                case "technical":
+                    recommendations.careers = [
+                        "Software Developer",
+                        "DevOps Engineer",
+                        "Systems Architect"
+                    ];
+                    recommendations.learningPath = [
+                        "Complete a programming certification (Java, Python, etc.)",
+                        "Learn about cloud computing platforms (AWS, Azure)",
+                        "Study software development methodologies (Agile, Scrum)"
+                    ];
+                    break;
+                case "creative":
+                    recommendations.careers = [
+                        "Graphic Designer",
+                        "UI/UX Designer",
+                        "Creative Director"
+                    ];
+                    recommendations.learningPath = [
+                        "Learn design tools (Adobe Creative Suite, Figma)",
+                        "Study color theory and typography",
+                        "Build a portfolio of creative work"
+                    ];
+                    break;
+                case "social":
+                    recommendations.careers = [
+                        "Human Resources Specialist",
+                        "Career Counselor",
+                        "Team Manager"
+                    ];
+                    recommendations.learningPath = [
+                        "Develop communication and leadership skills",
+                        "Learn conflict resolution techniques",
+                        "Study organizational behavior"
+                    ];
+                    break;
+                case "analytical":
+                    recommendations.careers = [
+                        "Data Analyst",
+                        "Business Intelligence Specialist",
+                        "Research Scientist"
+                    ];
+                    recommendations.learningPath = [
+                        "Learn data analysis tools (Excel, SQL, Tableau)",
+                        "Study statistics and data visualization",
+                        "Take courses in machine learning basics"
+                    ];
+                    break;
+                case "practical":
+                    recommendations.careers = [
+                        "Mechanical Engineer",
+                        "Construction Manager",
+                        "Manufacturing Specialist"
+                    ];
+                    recommendations.learningPath = [
+                        "Learn CAD software",
+                        "Study materials science",
+                        "Get safety certifications"
+                    ];
+                    break;
+            }
+
+            // Add job opportunities based on education level
+            if (educationLevel === "high_school") {
+                recommendations.jobOpportunities = [
+                    "Entry-level positions in your field",
+                    "Apprenticeship programs",
+                    "Internship opportunities"
+                ];
+            } else if (educationLevel === "bachelor") {
+                recommendations.jobOpportunities = [
+                    "Junior roles in your recommended field",
+                    "Graduate training programs",
+                    "Specialist entry positions"
+                ];
+            } else {
+                recommendations.jobOpportunities = [
+                    "Mid-level to senior positions",
+                    "Management roles",
+                    "Specialist consulting positions"
+                ];
+            }
+
+            return recommendations;
+        }
+
+        function displayResults(results) {
+            const resultsContainer = document.getElementById('career-results');
+            resultsContainer.innerHTML = `
+                <div class="card result-card">
+                    <div class="card-body">
+                        <h4 class="card-title">Based on your responses, we recommend exploring these career paths:</h4>
+                        <ul class="list-group list-group-flush">
+                            ${results.careers.map(career => `<li class="list-group-item">${career}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('learning-path').innerHTML = `
+                <div class="card result-card">
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            ${results.learningPath.map(item => `<li class="list-group-item">${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('job-opportunities').innerHTML = `
+                <div class="card result-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Companies currently hiring for these roles:</h5>
+                        <ul class="list-group list-group-flush">
+                            ${results.jobOpportunities.map(job => `<li class="list-group-item">${job}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
